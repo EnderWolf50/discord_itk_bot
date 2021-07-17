@@ -85,11 +85,14 @@ class EventHandlers(CogInit):
             await msg.channel.send(Events.loading_cat[0])
             await msg.channel.send(Events.loading_cat[1])
             await msg.channel.send(Events.loading_cat[2])
+        # 六點
+        elif any(kw in content for kw in ("......", "六點", "抱歉")):
+            await msg.reply(Emojis.i11_chiwawa)
         # 素每
         elif any(kw in content for kw in ("熱", "好熱", "素每")):
             pic = discord.File(random.choice(Events.so_hot))
             await msg.reply(file=pic, delete_after=7)
-        # 素每
+        # 唐立淇
         elif any(kw in content for kw in ("星座", "唐綺陽", "唐立淇")):
             pic = discord.File(Events.tang)
             await msg.reply(file=pic, delete_after=7)
