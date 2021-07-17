@@ -7,6 +7,7 @@ from bot.log import logging_setup, sentry_setup
 logging_setup()
 sentry_setup()
 
+
 itk_bot = ItkBot(
     command_prefix=Bot.prefix,
     description=Bot.description,

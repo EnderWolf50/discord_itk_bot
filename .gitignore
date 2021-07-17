@@ -1,12 +1,12 @@
-.vscode/
 __pycache__/
+.vscode/
+.env
+.google-cookie
 
 logs/
+disabled/
 images/backup/
 
-.env
-.pdm.toml
-
-*.pyc
-
+sub.*
 temp.*
+tempCodeRunnerFile.*

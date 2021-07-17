@@ -1,0 +1,10 @@
+[packages]
+"discord.py" = "*"
+pymongo = "*"
+sentry-sdk = "*"
+coloredlogs = "*"
+pyyaml = "*"
+saucenao-api = "*"
+google-api-python-client = "*"
+addict = "*"
+dnspython = "*"
