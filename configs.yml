@@ -378,7 +378,7 @@ events:
   flaming: !JOIN [*IMAGE_FOLDER, "flaming.jpg"]
   you_bad: !JOIN [*IMAGE_FOLDER, "you_bad.png"]
   ck_lewd: !JOIN [*IMAGE_FOLDER, "ck_lewd.jpg"]
-  trap_card: !JOIN [*IMAGE_FOLDER, "ck_lewd.jpg"]
+  trap_card: !JOIN [*IMAGE_FOLDER, "helen_trap_card.gif"]
   make_friends:
     - !JOIN [*IMAGE_FOLDER, "make_friends.jpg"]
     - !JOIN [*IMAGE_FOLDER, "make_friends_gg.jpg"]
