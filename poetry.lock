@@ -580,8 +580,8 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.9.6"
-content-hash = "232048c34a67d3be5cf5e3ead7c03893ba736b977bca42bde2d364387c6e8ed9"
+python-versions = "3.9.6"
+content-hash = "bbe3b20fabbcb7162b5a493da7e274a14eafa3c82a3a377529c73d96f89d3e0e"
 
 [metadata.files]
 addict = [
