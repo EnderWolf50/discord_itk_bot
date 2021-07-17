@@ -62,12 +62,10 @@ class EmojiRank(CogInit):
 
     async def _guild_emoji_list(self) -> set[discord.abc.Snowflake]:
         guild = await self.bot.fetch_guild(Bot.main_guild)
-        result = {emo.id for emo in guild.emojis}
-        return result
+        return {emo.id for emo in guild.emojis}
 
     async def _mongo_emoji_list(self) -> set[discord.abc.Snowflake]:
-        result = {emo["_id"] for emo in self.mongo.find()}
-        return result
+        return {emo["_id"] for emo in self.mongo.find()}
 
     async def _get_updated_rank_embed(self) -> discord.Embed:
         current_page = self.rank_msg_details[1]
@@ -206,8 +204,6 @@ class EmojiRank(CogInit):
                 await self.rank_msg_details[0].delete()
         except discord.NotFound:
             print("[Emoji rank] 找不到要刪除的訊息，已略過")
-            pass  # 略過並繼續執行
-
         # 獲取 Mongo 內的統計資料並排序
         db_emo_list = [
             {

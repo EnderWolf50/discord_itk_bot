@@ -4,6 +4,7 @@ from typing import Union
 
 import yaml
 from addict import Dict
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
@@ -19,22 +20,19 @@ __all__ = [
     "Tasks",
 ]
 
+load_dotenv()
+
 
 def _env_var_constructor(loader, node) -> Union[str, list[str]]:
-    default = None
-
     # 為純量，獲取單一環境變數
     if node.id == "scalar":
         key = loader.construct_scalar(node)
-        value = os.getenv(key, default)
+        default = None
 
-        return value
-    # 為序列，獲取多個環境變數
+        return os.getenv(key, default)
     else:
         keys = loader.construct_sequence(node)
-        values = [os.getenv(key) for key in keys]
-
-        return values
+        return [os.getenv(key) for key in keys]
 
 
 def _join_var_constructor(loader, node) -> str:

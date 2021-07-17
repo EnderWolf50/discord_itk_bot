@@ -1,12 +1,11 @@
-__pycache__/
-.vscode/
-.env
-.google-cookie
+**/__pycache__
+**/.vscode
 
-logs/
-disabled/
-images/backup/
+**/images/backup
+**/disabled
+**/logs
 
-sub.*
-temp.*
-tempCodeRunnerFile.*
+**/.env
+**/.google-cookie
+
+**/temp.*

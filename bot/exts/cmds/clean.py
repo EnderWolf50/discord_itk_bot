@@ -39,12 +39,15 @@ class Clean(CogInit):
         await confirm_msg.add_reaction(Reactions.cross_mark)
 
         def command_confirm(reaction: discord.Reaction, user: discord.User):
-            if user != self.bot.user:
-                if user == ctx.author and reaction.message.id == confirm_msg.id:
-                    if str(reaction.emoji) == Reactions.check_mark:
-                        raise ActiveCommand
-                    elif str(reaction.emoji) == Reactions.cross_mark:
-                        raise CancelCommand
+            if (
+                user != self.bot.user
+                and user == ctx.author
+                and reaction.message.id == confirm_msg.id
+            ):
+                if str(reaction.emoji) == Reactions.check_mark:
+                    raise ActiveCommand
+                elif str(reaction.emoji) == Reactions.cross_mark:
+                    raise CancelCommand
 
         try:
             await self.bot.wait_for("reaction_add", timeout=10, check=command_confirm)
@@ -119,12 +122,15 @@ class Clean(CogInit):
         await confirm_msg.add_reaction(Reactions.cross_mark)
 
         def command_confirm(reaction: discord.Reaction, user: discord.User):
-            if user != self.bot.user:
-                if user == ctx.author and reaction.message.id == confirm_msg.id:
-                    if str(reaction.emoji) == Reactions.check_mark:
-                        raise ActiveCommand
-                    elif str(reaction.emoji) == Reactions.cross_mark:
-                        raise CancelCommand
+            if (
+                user != self.bot.user
+                and user == ctx.author
+                and reaction.message.id == confirm_msg.id
+            ):
+                if str(reaction.emoji) == Reactions.check_mark:
+                    raise ActiveCommand
+                elif str(reaction.emoji) == Reactions.cross_mark:
+                    raise CancelCommand
 
         try:
             await self.bot.wait_for("reaction_add", timeout=10, check=command_confirm)

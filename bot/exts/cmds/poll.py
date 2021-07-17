@@ -16,10 +16,10 @@ class Poll(CogInit):
 
         # 反應數量上限為 20
         if 1 <= len_of_options <= 20:
-            description = ""
+            description = "".join(
+                f"\n{self.poll_emojis[i]} {options[i]}" for i in range(len_of_options)
+            )
 
-            for i in range(len_of_options):
-                description += f"\n{self.poll_emojis[i]} {options[i]}"
             embed = discord.Embed(description=description, color=Colors.cyan)
 
             poll_msg = await ctx.send(title, embed=embed)

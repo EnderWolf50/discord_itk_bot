@@ -104,12 +104,9 @@ class Cue(CogInit):
                 cue_string = member_cue_list[pos - 1]
 
                 await ctx.send(f"{member_name} 語錄 {pos} - {cue_string}")
-                await ctx.message.delete()
-            # 未抓到語錄，發送提示
             else:
                 await ctx.send(f"{member_name} 沒有語錄")
-                await ctx.message.delete()
-            return
+            await ctx.message.delete()
 
         # 獲取所有已記錄的語錄
         cue_list = {doc["_id"]: doc["list"] for doc in self.mongo.find()}
@@ -192,7 +189,7 @@ class Cue(CogInit):
         cue_string = member_cue_list[pos - 1]
 
         # 語錄刪除後少於等於零個，連同成員紀錄刪除
-        if len(member_cue_list) - 1 <= 0:
+        if len(member_cue_list) <= 1:
             # 刪除成員紀錄
             self.mongo.delete({"_id": member.id})
 
@@ -216,8 +213,6 @@ class Cue(CogInit):
                 await self.cue_msg_details[0].delete()
         except discord.NotFound:
             print("[Cue list] 找不到要刪除的訊息，已略過")
-            pass  # 略過並繼續執行
-
         member_name = member.display_name
         member_cue_list = self._get_member_cue_list(member)
         # 無語錄紀錄，傳送提示

@@ -57,11 +57,8 @@ class ImgSearch(CogInit):
             for i, url in enumerate(res.urls, 1):
                 embed.add_field(name=f"連結{i}", value=url, inline=False)
         # 連結來源
-        if "source" in res.raw["data"]:
-            if res.raw["data"]["source"]:
-                embed.add_field(
-                    name="來源", value=res.raw["data"]["source"], inline=False
-                )
+        if "source" in res.raw["data"] and res.raw["data"]["source"]:
+            embed.add_field(name="來源", value=res.raw["data"]["source"], inline=False)
         return embed
 
     def _get_no_result_embed(self, i: int, img_url: str, remain: int) -> discord.Embed:

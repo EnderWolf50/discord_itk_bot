@@ -58,46 +58,47 @@ class AbGame(CogInit):
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message) -> None:
         # 檢查是否有正在進行的遊戲紀錄
-        if msg.channel.id in self._ongoing_games:
-            # 忽略機器人事件
-            if msg.author == self.bot.user:
+        if msg.channel.id not in self._ongoing_games:
+            return
+        # 忽略機器人事件
+        if msg.author == self.bot.user:
+            return
+
+        game_info = self._ongoing_games[msg.channel.id]
+        ans_len = game_info["ans_len"]
+        ans = game_info["ans"]
+
+        content = msg.content
+        res_msg = None
+        if content.isdigit() and len(content) == ans_len:
+            a_count, b_count = self._get_ab_count(list(content), ans, ans_len)
+            # 如果回傳值皆大於答案長度，為輸入重複數字
+            if a_count > ans_len or b_count > ans_len:
+                res_msg = await msg.reply(f"請勿輸入重複的數字！｜答案長度：{ans_len}")
+            # A 數量等於答案長度即為答對
+            elif a_count == ans_len:
+                # 刪除遊戲資訊
+                del self._ongoing_games[msg.channel.id]
+
+                await msg.reply(
+                    f"（{content}）：**{a_count}A{b_count}B**\n"
+                    f"恭喜 {msg.author.mention} 答對了！｜"
+                    f"遊戲總時長：{self._get_time_taken_str(game_info['start_time'])}"
+                )
+                # 提早跳出函式（避免發送提示訊息及記錄）
+                await asyncio.sleep(5)
+                await self._clean_game_messages(msg.channel, game_info)
                 return
-
-            game_info = self._ongoing_games[msg.channel.id]
-            ans_len = game_info["ans_len"]
-            ans = game_info["ans"]
-
-            content = msg.content
-            res_msg = None
-            if content.isdigit() and len(content) == ans_len:
-                a_count, b_count = self._get_ab_count(list(content), ans, ans_len)
-                # 如果回傳值皆大於答案長度，為輸入重複數字
-                if a_count > ans_len or b_count > ans_len:
-                    res_msg = await msg.reply(f"請勿輸入重複的數字！｜答案長度：{ans_len}")
-                # A 數量等於答案長度即為答對
-                elif a_count == ans_len:
-                    # 刪除遊戲資訊
-                    del self._ongoing_games[msg.channel.id]
-
-                    await msg.reply(
-                        f"（{content}）：**{a_count}A{b_count}B**\n"
-                        f"恭喜 {msg.author.mention} 答對了！｜"
-                        f"遊戲總時長：{self._get_time_taken_str(game_info['start_time'])}"
-                    )
-                    # 提早跳出函式（避免發送提示訊息及記錄）
-                    await asyncio.sleep(5)
-                    await self._clean_game_messages(msg.channel, game_info)
-                    return
-                # 提示玩家目前進度
-                else:
-                    res_msg = await msg.reply(
-                        f"（{content}）：**{a_count}A{b_count}B**｜答案長度：{ans_len}"
-                    )
-                # 紀錄回覆訊息
-                game_info["msg_delete_queue"].append(res_msg.id)
-                # 如果是在群組端遊玩，額外記錄猜測訊息
-                if msg.guild:
-                    game_info["msg_delete_queue"].append(msg.id)
+            # 提示玩家目前進度
+            else:
+                res_msg = await msg.reply(
+                    f"（{content}）：**{a_count}A{b_count}B**｜答案長度：{ans_len}"
+                )
+            # 紀錄回覆訊息
+            game_info["msg_delete_queue"].append(res_msg.id)
+            # 如果是在群組端遊玩，額外記錄猜測訊息
+            if msg.guild:
+                game_info["msg_delete_queue"].append(msg.id)
 
     @commands.group(name="ab")
     async def ab(self, ctx: commands.Context) -> None:
