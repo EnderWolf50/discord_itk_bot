@@ -46,6 +46,8 @@ class ItkBot(commands.Bot):
 
         from bot.configs import Emojis
 
+        self.owner = self.get_user(Bot.owner)
+
         self.ignore_kw_list = []
         for cmd in self.commands:
             self.ignore_kw_list.append(cmd.name)

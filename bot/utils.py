@@ -12,18 +12,18 @@ class MessageUtils:
     async def reply_then_delete(
         ctx: commands.Context,
         msg: str,
-        msg_1_delay: float = 10,
-        msg_2_delay: Optional[float] = None,
+        replied_msg_delay: float = 10,
+        reference_msg_delay: Optional[float] = None,
         **kwargs
     ) -> discord.Message:
         """回復並在指定秒數後刪除訊息"""
-        if msg_2_delay is None:
-            msg_2_delay = msg_1_delay
+        if reference_msg_delay is None:
+            reference_msg_delay = replied_msg_delay
         # 發送訊息
-        reply_msg = await ctx.reply(msg, **kwargs, delete_after=msg_1_delay)
+        reply_msg = await ctx.reply(msg, **kwargs, delete_after=replied_msg_delay)
         # 刪除訊息
         if ctx.guild:
-            await ctx.message.delete(delay=msg_2_delay)
+            await ctx.message.delete(delay=reference_msg_delay)
         return reply_msg
 
 

@@ -12,6 +12,7 @@ class Choose(CogInit):
         await ctx.message.delete(delay=3)
         if len(choices) < 1:
             await ctx.reply(f"你沒有輸入選項 {Emojis.rainbow_pepe_angry}", delete_after=5)
+            return
         await ctx.author.send(random.choice(choices))
 
 

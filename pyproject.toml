@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "discord_itk_bot"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+description = "Just a stupid discord bot for my personal use."
+authors = ["Kerati <enderwolf50@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "3.9.6"
@@ -18,8 +18,8 @@ dnspython = "^2.1.0"
 python-dotenv = "^0.18.0"
 
 [tool.poetry.dev-dependencies]
-black = "^21.7b0"
 flake8 = "^3.9.2"
+black = "^21.7b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
