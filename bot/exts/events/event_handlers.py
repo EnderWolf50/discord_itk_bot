@@ -4,7 +4,7 @@ import re
 from datetime import timedelta
 from itertools import cycle
 from pathlib import Path
-from typing import Any
+from typing import Optional
 
 import discord
 from bot import ItkBot
@@ -22,17 +22,24 @@ class EventHandlers(CogInit):
         self.backup_path = Path(Bot.image_folder, "backup")
         self.backup_path.mkdir(exist_ok=True)
 
+        self.muted = {"status": False, "start_time": None}
+
         self.google_search_api_keys = cycle(Bot.google_search_api_keys)
 
-    def _is_command(self, string: str) -> bool:
-        return string.lower()[1:].split(" ")[0] in self.bot.ignore_kw_list
+    def _is_command(self, text: str) -> bool:
+        return text.lower()[1:].split(" ")[0] in self.bot.ignore_kw_list
 
-    def _is_image(self, string: str) -> bool:
+    def _is_image(self, text: str) -> bool:
         return any(
-            string.lower() == image_ext for image_ext in ("jpg", "jpeg", "png", "gif")
+            text.lower() == image_ext for image_ext in ("jpg", "jpeg", "png", "gif")
         )
 
-    def google_search(self, q: str, **kwargs) -> dict[str, Any]:
+    def _is_in_mentions(self, msg: discord.Message) -> bool:
+        return self.bot.user in msg.mentions and not self._is_command(
+            msg.content.lower()
+        )
+
+    def google_search(self, q: str, **kwargs) -> Optional[dict]:
         key = next(self.google_search_api_keys)
         cse = Bot.custom_search_engine_id
         try:
@@ -55,7 +62,18 @@ class EventHandlers(CogInit):
 
         author_name = msg.author.display_name.lower()
         content = msg.content.lower()
-        # mentions = [u.display_name.lower() for u in msg.mentions]
+        # mention_names = [u.display_name.lower() for u in msg.mentions]
+
+        # 安靜
+        if msg.guild.id in self.muted:
+            if self._is_in_mentions(msg) and any(
+                kw in content for kw in ("說話", "講話", "公威")
+            ):
+                del self.muted[msg.guild.id]
+            elif msg.created_at - self.muted[msg.guild.id] >= timedelta(minutes=3):
+                del self.muted[msg.guild.id]
+            else:
+                return
 
         # Reaction
         if "ㄐㄐ" in content:
@@ -70,20 +88,12 @@ class EventHandlers(CogInit):
         if msg.author.bot:
             return
 
-        # 嘎嘎嘎嘎嘎
-        if content == "嘎嘎嘎嘎嘎" and msg.reference:
-            ref = await msg.channel.fetch_message(msg.reference.message_id)
-            files = [
-                await att.to_file(use_cached=True)
-                for att in ref.attachments
-                if self._is_image(att.filename.split(".")[-1])
-            ]
-            await msg.author.send(ref.content, files=files)
-            await msg.delete()
-            return
-
         # 提及機器人
-        if self.bot.user in msg.mentions and not self._is_command(content):
+        if self._is_in_mentions(msg):
+            if any(kw in content for kw in ("安靜", "閉嘴", "惦惦")):
+                self.muted[msg.guild.id] = msg.created_at
+                await msg.reply(f"抱歉......{Emojis.i11_chiwawa}")
+                return
             await msg.reply(random.choice(Events.mentioned_reply))
         # 窩不知道
         elif any(kw in content for kw in ("窩不知道", "我不知道", "idk")):
@@ -101,7 +111,7 @@ class EventHandlers(CogInit):
             await msg.channel.send(Events.loading_cat[1])
             await msg.channel.send(Events.loading_cat[2])
         # 六點
-        elif any(kw in content for kw in ("......", "抱歉")):
+        elif any(kw in content for kw in ("......", "六點", "抱歉")):
             await msg.reply(Emojis.i11_chiwawa)
         # 素每
         elif any(kw in content for kw in ("熱", "好熱", "素每")):
