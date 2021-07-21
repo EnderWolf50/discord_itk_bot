@@ -27,6 +27,11 @@ class EventHandlers(CogInit):
     def _is_command(self, string: str) -> bool:
         return string.lower()[1:].split(" ")[0] in self.bot.ignore_kw_list
 
+    def _is_image(self, string: str) -> bool:
+        return any(
+            string.lower() == image_ext for image_ext in ("jpg", "jpeg", "png", "gif")
+        )
+
     def google_search(self, q: str, **kwargs) -> dict[str, Any]:
         key = next(self.google_search_api_keys)
         cse = Bot.custom_search_engine_id
@@ -48,9 +53,9 @@ class EventHandlers(CogInit):
         if msg.channel and msg.channel.id in Bot.ignore_channels:
             return
 
-        author = msg.author
-        author_name = author.display_name.lower()
+        author_name = msg.author.display_name.lower()
         content = msg.content.lower()
+        # mentions = [u.display_name.lower() for u in msg.mentions]
 
         # Reaction
         if "ㄐㄐ" in content:
@@ -65,7 +70,18 @@ class EventHandlers(CogInit):
         if msg.author.bot:
             return
 
-        # mentions = [u.display_name for u in msg.mentions]
+        # 嘎嘎嘎嘎嘎
+        if content == "嘎嘎嘎嘎嘎" and msg.reference:
+            ref = await msg.channel.fetch_message(msg.reference.message_id)
+            files = [
+                await att.to_file(use_cached=True)
+                for att in ref.attachments
+                if self._is_image(att.filename.split(".")[-1])
+            ]
+            await msg.author.send(ref.content, files=files)
+            await msg.delete()
+            return
+
         # 提及機器人
         if self.bot.user in msg.mentions and not self._is_command(content):
             await msg.reply(random.choice(Events.mentioned_reply))
@@ -75,7 +91,6 @@ class EventHandlers(CogInit):
             weights = [i[1] for i in Events.idk]
 
             pic = random.choices(images, weights=weights)[0]
-
             if pic.endswith(".gif"):
                 await msg.reply(file=discord.File(pic), delete_after=20)
             else:
@@ -86,7 +101,7 @@ class EventHandlers(CogInit):
             await msg.channel.send(Events.loading_cat[1])
             await msg.channel.send(Events.loading_cat[2])
         # 六點
-        elif any(kw in content for kw in ("......", "六點", "抱歉")):
+        elif any(kw in content for kw in ("......", "抱歉")):
             await msg.reply(Emojis.i11_chiwawa)
         # 素每
         elif any(kw in content for kw in ("熱", "好熱", "素每")):
@@ -168,17 +183,10 @@ class EventHandlers(CogInit):
                 await msg.reply(result[0]["link"], delete_after=30)
 
         # 圖片備份
-        counter = 0
-        for attachment in msg.attachments:
-            if any(
-                attachment.filename.lower().endswith(ext)
-                for ext in (".jpg", ".jpeg", ".png", ".gif")
-            ):
-                counter += 1
-                ext = attachment.filename.split(".")[1]
-                await attachment.save(
-                    self.backup_path / Path(f"{msg.id}_{counter:02d}.{ext}")
-                )
+        for i, att in enumerate(msg.attachments):
+            ext = att.filename.split(".")[-1]
+            if self._is_image(ext):
+                await att.save(self.backup_path / Path(f"{msg.id}_{i:02d}.{ext}"))
 
     @commands.Cog.listener()
     async def on_message_edit(
