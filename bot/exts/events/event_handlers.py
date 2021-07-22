@@ -119,7 +119,7 @@ class EventHandlers(CogInit):
         if self._is_in_mentions(msg):
             await msg.reply(random.choice(Events.mentioned_reply))
         # 窩不知道
-        elif self._search_pattern(content, r"[窩我]不知道|idk"):
+        elif self._search_pattern(r"[窩我]不知道|idk", content):
             images = [i[0] for i in Events.idk]
             weights = [i[1] for i in Events.idk]
 
