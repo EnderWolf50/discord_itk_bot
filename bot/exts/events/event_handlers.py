@@ -103,7 +103,7 @@ class EventHandlers(CogInit):
         if msg.author.bot:
             return
 
-        if not self._search_pattern(r"(?:閉|B\s?)嘴|閉閉|惦惦", content):
+        if self._search_pattern(r"(?:閉|B\s?)嘴|閉閉|惦惦", content):
             self.muted[msg.guild.id] = {
                 "start_time": msg.created_at,
                 "user": msg.author,
