@@ -155,7 +155,7 @@ class EventHandlers(CogInit):
         elif re.search(r"dount|bakery|撒嬌", author_name) is not None:
             await msg.add_reaction(random.choice(Events.act_cute))
         # ARKN
-        elif re.match(r"arkn|素材", content) is not None:
+        elif re.search(r"^(arkn|素材)$", content) is not None:
             pic = discord.File(Events.arkn)
             await msg.reply(file=pic, delete_after=60)
         # 神奇海螺
