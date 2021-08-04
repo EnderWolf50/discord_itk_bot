@@ -110,7 +110,7 @@ class ImgSearch(CogInit):
         if msg.id in self.result_list:
             del self.result_list[msg.id]
 
-    @commands.command(aliases=["img_search", "is"])
+    @commands.command(aliases=["is"])
     async def image_search(self, ctx: commands.Context, *args) -> None:
         try:
             # 確認是否有指定最低相似度

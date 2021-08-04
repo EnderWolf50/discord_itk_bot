@@ -39,9 +39,6 @@ class EventHandlers(CogInit):
             msg.content.lower()
         )
 
-    def _search_pattern(self, pattern, text) -> bool:
-        return re.search(pattern, text) is not None
-
     def google_search(self, q: str, **kwargs) -> Optional[dict]:
         key = next(self.google_search_api_keys)
         cse = Bot.custom_search_engine_id
@@ -78,7 +75,7 @@ class EventHandlers(CogInit):
                 return
 
             if msg.author != self.muted[msg.guild.id]["user"]:
-                if re.search(r"好了啦|講話|說話|公威", content) is None:
+                if re.search(r"好了啦|[講說]話|公威", content) is None:
                     await msg.reply(
                         f"{self.muted[msg.guild.id]['user'].mention} 叫我閉嘴"
                         " <:105:741262288438427719>"
@@ -103,7 +100,7 @@ class EventHandlers(CogInit):
         if msg.author.bot:
             return
 
-        if self._search_pattern(r"(?:閉|B\s?)嘴|閉閉|惦惦", content):
+        if any(kw in content for kw in ("閉嘴", "閉閉", "惦惦")):
             self.muted[msg.guild.id] = {
                 "start_time": msg.created_at,
                 "user": msg.author,
@@ -119,7 +116,7 @@ class EventHandlers(CogInit):
         if self._is_in_mentions(msg):
             await msg.reply(random.choice(Events.mentioned_reply))
         # 窩不知道
-        elif self._search_pattern(r"[窩我]不知道|idk", content):
+        elif re.search(r"[窩我]不知道|idk", content):
             images = [i[0] for i in Events.idk]
             weights = [i[1] for i in Events.idk]
 
@@ -129,34 +126,38 @@ class EventHandlers(CogInit):
             else:
                 await msg.reply(file=discord.File(pic), delete_after=7)
         # 讀取貓咪
-        elif self._search_pattern(r"痾|ldc", content):
+        elif re.search(r"痾|ldc", content) is not None:
             await msg.channel.send(Events.loading_cat[0])
             await msg.channel.send(Events.loading_cat[1])
             await msg.channel.send(Events.loading_cat[2])
         # 素每
-        elif self._search_pattern(r"[好很]熱|素每", content):
+        elif re.search(r"[好很]熱|素每", content) is not None:
             pic = discord.File(random.choice(Events.so_hot))
             await msg.reply(file=pic, delete_after=7)
         # 六點
-        elif self._search_pattern(r"\.{6}|六點|抱歉", content):
+        elif re.search(r"\.{6}|六點|抱歉", content) is not None:
             await msg.reply(Emojis.i11_chiwawa)
         # 唐立淇
-        elif self._search_pattern(r"星座|唐(?:綺陽|立淇)", content):
+        elif re.search(r"星座|唐(?:綺陽|立淇)", content) is not None:
             pic = discord.File(Events.tang)
             await msg.reply(file=pic, delete_after=7)
         # 很嗆是吧
-        elif self._search_pattern(r"很?嗆(?:是吧|[喔欸])?", content):
+        elif re.search(r"很?嗆(?:是吧|[喔欸])?", content) is not None:
             pic = discord.File(Events.flaming)
             await msg.reply(file=pic, delete_after=7)
         # 撒嬌 (訊息)
-        elif self._search_pattern(r"dount|bakery|撒嬌", content):
+        elif re.search(r"dount|bakery|撒嬌", content) is not None:
             if random.randint(0, 4) == 4:
                 await msg.reply("還敢撒嬌阿")
             else:
                 await msg.reply(random.choice(Events.act_cute))
         # 撒嬌 (名稱)
-        elif self._search_pattern(r"dount|bakery|撒嬌", author_name):
+        elif re.search(r"dount|bakery|撒嬌", author_name) is not None:
             await msg.add_reaction(random.choice(Events.act_cute))
+        # ARKN
+        elif re.match(r"arkn|素材", content) is not None:
+            pic = discord.File(Events.arkn)
+            await msg.reply(file=pic, delete_after=60)
         # 神奇海螺
         elif "神奇海螺" in content and content[:2] != "請問":
             pic = discord.File(random.choice(Events.magic_conch.kw))

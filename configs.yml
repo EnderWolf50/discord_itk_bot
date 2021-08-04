@@ -371,13 +371,14 @@ help_messages:
 
 events:
   helen_art: *helen_art
-  fake: !JOIN [*IMAGE_FOLDER, "fake.gif"]
-  tang: !JOIN [*IMAGE_FOLDER, "tang.jpg"]
-  scared: !JOIN [*IMAGE_FOLDER, "scared.jpg"]
-  chen: !JOIN [*IMAGE_FOLDER, "chen_heal.png"]
-  flaming: !JOIN [*IMAGE_FOLDER, "flaming.jpg"]
-  you_bad: !JOIN [*IMAGE_FOLDER, "you_bad.png"]
-  ck_lewd: !JOIN [*IMAGE_FOLDER, "ck_lewd.jpg"]
+  fake     : !JOIN [*IMAGE_FOLDER, "fake.gif"]
+  tang     : !JOIN [*IMAGE_FOLDER, "tang.jpg"]
+  scared   : !JOIN [*IMAGE_FOLDER, "scared.jpg"]
+  chen     : !JOIN [*IMAGE_FOLDER, "chen_heal.png"]
+  flaming  : !JOIN [*IMAGE_FOLDER, "flaming.jpg"]
+  you_bad  : !JOIN [*IMAGE_FOLDER, "you_bad.png"]
+  ck_lewd  : !JOIN [*IMAGE_FOLDER, "ck_lewd.jpg"]
+  arkn     : !JOIN [*IMAGE_FOLDER, "arkn_materials.png"]
   trap_card: !JOIN [*IMAGE_FOLDER, "helen_trap_card.gif"]
   make_friends:
     - !JOIN [*IMAGE_FOLDER, "make_friends.jpg"]
