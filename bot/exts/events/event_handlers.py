@@ -157,7 +157,7 @@ class EventHandlers(CogInit):
         # ARKN
         elif re.search(r"^(arkn|素材)$", content) is not None:
             pic = discord.File(Events.arkn)
-            await msg.reply(file=pic, delete_after=60)
+            await msg.reply(file=pic, delete_after=120)
         # 神奇海螺
         elif "神奇海螺" in content and content[:2] != "請問":
             pic = discord.File(random.choice(Events.magic_conch.kw))
